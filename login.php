@@ -1,4 +1,7 @@
-﻿<?php include('hnav.php'); ?>
+﻿<?php
+        include('model/init.php');
+        include('hnav.php'); 
+?>
 
 
 <div class="site-blocks-cover inner-page-cover overlay" style="background-image: url(images/banner2.png);" data-aos="fade" data-stellar-background-ratio="0.5">
@@ -29,7 +32,7 @@
 
                 <h2 class="mb-5 text-black">Log In</h2>
 
-                <form action="login.php" class="p-5 bg-white" method="POST" id="loginw">
+                <form action="userlogin.php" class="p-5 bg-white" method="POST" id="loginw">
 
                     <div class="row form-group">
 
@@ -58,7 +61,7 @@
 
                     <div class="row form-group">
                         <div class="col-md-12">
-                            <input type="submit" value="Sign In" class="btn btn-primary py-2 px-4 text-white" name="ulogin" id="ulogin">
+                            <input type="submit" value="Sign In" class="btn btn-primary py-2 px-4 text-white" name="submit" id="ulogin">
                         </div>
                     </div>
 

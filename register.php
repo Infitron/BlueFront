@@ -1,4 +1,92 @@
-﻿<?php include('hnav.php'); ?>
+﻿<?php
+        include('model/init.php');
+        include('hnav.php'); 
+
+
+        if(isset($_POST['submit'])){
+
+                $username   = addslashes(trim($_POST['username']));
+                $email      = addslashes(trim($_POST['email']));
+                $password   = addslashes(trim($_POST['password']));
+                $password2   = addslashes(trim($_POST['password2']));
+                $user_role  = addslashes(trim($_POST['user_role']));
+                $date       =  date('Y/m/d');
+
+                if ($password != $password2) {
+                     echo "<script>alert('Password not match, Please fill in same password on both fields')</script>";
+                     echo "<script> window.open('register.php','_self'); </script>";
+                     die();
+                }
+
+
+                $url = "https://api.bluecollarhub.com.ng/api/Account/Register";
+
+                //Initiate cURL.
+                $ch = curl_init($url);
+
+                //The JSON data.
+                 $jsonData = array(
+                      'EmailAddress' => $email,
+                      'Password' =>  $password,
+                      'CreationDate' => $date,
+                      'RoleId' => $user_role,
+                      'UserName' =>  $username 
+                );
+
+                //Encode the array into JSON.
+                $jsonDataEncoded = json_encode($jsonData);
+
+
+                echo "<span style='display:none'>";
+                //Tell cURL that we want to send a POST request.
+                curl_setopt($ch, CURLOPT_POST, 1);
+
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                //Attach our encoded JSON string to the POST fields.
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+
+                //Set the content type to application/json
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8'));
+
+                //Execute the request
+                $result = curl_exec($ch);
+
+                //Close CURL
+                curl_close($ch);
+
+                echo"</span>";
+
+               if($result){
+                  
+                    $testCheck = json_decode($result);
+                    $status  = $testCheck->{'success'};
+
+                    if(http_response_code(200) && $status == true ){
+                        echo "<script>alert('Registration Successful')</script>";
+                        echo "<script> window.open('login.php','_self'); </script>";
+
+                    }else{
+                        echo "<script>alert('Error Input, Please make sure you enter correct data')</script>";
+                        echo "<script> window.open('register.php','_self'); </script>";
+                    }
+
+                }
+
+
+
+
+
+
+                
+                
+
+
+        }
+
+
+
+?>
 
 
 <div class="site-blocks-cover inner-page-cover overlay" style="background-image: url(images/banner2.png);" data-aos="fade" data-stellar-background-ratio="0.5">
@@ -57,19 +145,13 @@
                             <input type="password" id="password2" name="password2" class="form-control">
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <label class="col-md-4 col-sm-4 control-label" for="roleId" required>Register As: </label>
-                        <div class="col-md-4 col-sm-4">
-                            <label class="radio-inline" for="roleId">
-                                <input type="radio" name="roleId" id="roleId" value="1" checked="checked">An Artisan
-                            </label>
-
-                        </div>
-                        <div class="col-md-4 col-sm-4">
-
-                            <label class="radio-inline" for="roleId">
-                                <input type="radio" name="roleId" id="roleId" value="2">A Client
-                            </label>
+                     <div class="row form-group">
+                        <div class="col-md-12">
+                            <label class="text-black" for="regas">Register As: </label>
+                             <select class="form-control" id="regas" name="user_role">
+                                        <option value="2">Client</option>
+                                        <option value="1">Artisan</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -79,12 +161,12 @@
                     </div>
                     <div class="row form-group">
                         <div class="col-md-12">
-                            <input type="submit" value="Sign Up" name="reg_user" id="reg_user" class="btn btn-primary py-2 px-4 text-white">
+                            <input type="submit" value="Sign Up" name="submit" id="reg_user" class="btn btn-primary py-2 px-4 text-white">
                         </div>
                     </div>
                     <div>
                         <p>
-                            <? php echo $message; ?>
+                            <?php echo $message; ?>
                         </p>
                     </div>
                 </form>
